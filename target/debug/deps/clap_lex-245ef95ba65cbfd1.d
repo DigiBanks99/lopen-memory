@@ -1,0 +1,8 @@
+/home/lopen/source/lopen-memory/target/debug/deps/clap_lex-245ef95ba65cbfd1.d: /home/lopen/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.0.0/src/lib.rs /home/lopen/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.0.0/src/ext.rs
+
+/home/lopen/source/lopen-memory/target/debug/deps/libclap_lex-245ef95ba65cbfd1.rlib: /home/lopen/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.0.0/src/lib.rs /home/lopen/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.0.0/src/ext.rs
+
+/home/lopen/source/lopen-memory/target/debug/deps/libclap_lex-245ef95ba65cbfd1.rmeta: /home/lopen/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.0.0/src/lib.rs /home/lopen/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.0.0/src/ext.rs
+
+/home/lopen/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.0.0/src/lib.rs:
+/home/lopen/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.0.0/src/ext.rs:

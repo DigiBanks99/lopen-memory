@@ -1,0 +1,5 @@
+{
+    "debug.javascript.defaultRuntimeExecutable": {
+        "pwa-node": "c:\\users\\wilco.boshoff\\appdata\\local\\mise\\shims\\node"
+    }
+}

@@ -1,0 +1,10 @@
+C:\Users\wilco.boshoff\source\personal\ai\lopen-memory\target\release\deps\hashlink-96c19f15a2bcab7e.d: C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\lib.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\linked_hash_map.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\linked_hash_set.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\lru_cache.rs
+
+C:\Users\wilco.boshoff\source\personal\ai\lopen-memory\target\release\deps\libhashlink-96c19f15a2bcab7e.rlib: C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\lib.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\linked_hash_map.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\linked_hash_set.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\lru_cache.rs
+
+C:\Users\wilco.boshoff\source\personal\ai\lopen-memory\target\release\deps\libhashlink-96c19f15a2bcab7e.rmeta: C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\lib.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\linked_hash_map.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\linked_hash_set.rs C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\lru_cache.rs
+
+C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\lib.rs:
+C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\linked_hash_map.rs:
+C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\linked_hash_set.rs:
+C:\Users\wilco.boshoff\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\hashlink-0.9.1\src\lru_cache.rs:

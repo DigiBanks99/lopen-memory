@@ -1,0 +1,66 @@
+# lopen-memory
+
+A CLI utility for tracking software projects, modules, features, tasks, and research — backed by a local SQLite database. Designed for use by LLM agents.
+
+## Build
+
+Requires Rust (stable). The SQLite library is bundled statically — no system dependencies needed.
+
+```bash
+cargo build --release
+# Binary at: target/release/lopen-memory
+```
+
+## Install
+
+```bash
+cargo install --path .
+```
+
+Or copy `target/release/lopen-memory` to somewhere on your `$PATH`.
+
+## Database
+
+Default location: `~/.lopen-memory/lopen-memory.db`
+
+Override via environment variable or flag:
+```bash
+LOPEN_MEMORY_DB=/tmp/test.db lopen-memory project list
+lopen-memory --db /tmp/test.db project list
+```
+
+## Quick Start
+
+```bash
+# Projects
+lopen-memory project add my-app /home/user/my-app "Core application"
+lopen-memory project list
+lopen-memory project show --project my-app
+
+# Modules
+lopen-memory module add --project my-app auth "Authentication system"
+lopen-memory module transition --module auth --project my-app Planning
+
+# Features
+lopen-memory feature add --module auth login-flow "User login and session creation"
+
+# Tasks
+lopen-memory task add --feature login-flow implement-jwt "Implement JWT issuance"
+
+# Research
+lopen-memory research add jwt-rfc "The IETF JSON Web Token specification"
+lopen-memory research set-source --research jwt-rfc "https://datatracker.ietf.org/doc/html/rfc7519"
+lopen-memory research link --research jwt-rfc --module auth
+lopen-memory research search jwt
+```
+
+## Output
+
+Plain text by default. Add `--json` for JSON output on any command.
+
+## Hierarchy
+
+```
+Project → Module → Feature → Task
+Research (root-level, linked to any entity via bridge tables)
+```
