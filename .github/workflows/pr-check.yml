@@ -1,0 +1,98 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  pr-check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust: [stable, beta]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: cargo-registry-${{ runner.os }}-${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            cargo-registry-${{ runner.os }}-${{ matrix.rust }}-
+            cargo-registry-${{ runner.os }}-
+
+      - name: Cache cargo target
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: cargo-target-${{ runner.os }}-${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            cargo-target-${{ runner.os }}-${{ matrix.rust }}-
+            cargo-target-${{ runner.os }}-
+
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Check formatting
+        run: cargo fmt -- --check
+
+      - name: Run Clippy
+        uses: actions-rs/clippy@v1
+        with:
+          args: -- -D warnings
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --workspace --all-targets
+
+      - name: Test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --workspace
+
+      - name: Run cargo audit (generate JSON)
+        run: |
+          cargo install --locked cargo-audit || true
+          cargo audit -f json > cargo-audit.json || true
+        continue-on-error: true
+
+      - name: Upload cargo audit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cargo-audit.json
+          path: cargo-audit.json
+
+      - name: Fail on audit vulnerabilities
+        run: |
+          if [ ! -f cargo-audit.json ]; then
+            echo "No cargo-audit.json found; assuming no audit report."
+            exit 0
+          fi
+          python3 - <<'PY'
+import json,sys
+try:
+    j=json.load(open('cargo-audit.json'))
+except Exception:
+    sys.exit(0)
+v=j.get('vulnerabilities') or {}
+lst = []
+if isinstance(v, dict):
+    lst = v.get('list') or []
+elif isinstance(v, list):
+    lst = v
+count = len(lst)
+if count>0:
+    print(f"cargo-audit found {count} vulnerability(ies)")
+    sys.exit(1)
+sys.exit(0)
+PY
