@@ -1,101 +1,127 @@
 name: PR Checks
+on:
+  pull_request:
 
 permissions:
   contents: read
 
-on:
-  pull_request:
-    branches:
-      - main
-      - master
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
-  pr-check:
+  format-and-lint:
+    name: Format and Lint
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust: [stable, beta]
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Cache cargo registry
-        uses: actions/cache@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          path: |
+          targets: x86_64-unknown-linux-gnu
+
+      - name: Cache Rust artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          # Cache key uses OS and Cargo.lock hash to invalidate appropriately
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          paths: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: cargo-registry-${{ runner.os }}-${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            cargo-registry-${{ runner.os }}-${{ matrix.rust }}-
-            cargo-registry-${{ runner.os }}-
-
-      - name: Cache cargo target
-        uses: actions/cache@v4
-        with:
-          path: target
-          key: cargo-target-${{ runner.os }}-${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            cargo-target-${{ runner.os }}-${{ matrix.rust }}-
-            cargo-target-${{ runner.os }}-
-
-      - name: Set up Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+            target
 
       - name: Check formatting
-        run: cargo fmt -- --check
+        run: cargo fmt --all -- --check
 
-      - name: Run Clippy
-        uses: actions-rs/clippy@v1
+      - name: Run clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+  build:
+    name: Build and Test Matrix
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            binary: lopen-memory.exe
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            binary: lopen-memory
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            binary: lopen-memory
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Rust (with target)
+        uses: dtolnay/rust-toolchain@stable
         with:
-          args: -- -D warnings
+          targets: ${{ matrix.target }}
+
+      - name: Cache Rust artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          paths: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
 
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --workspace --all-targets
+        run: cargo build --workspace --all-features --locked --target ${{ matrix.target }}
 
       - name: Test
-        uses: actions-rs/cargo@v1
+        run: cargo test --workspace --all-features --locked --target ${{ matrix.target }}
+
+  security:
+    name: Security checks (cargo-audit + cargo-deny)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Rust (ubuntu target)
+        uses: dtolnay/rust-toolchain@stable
         with:
-          command: test
-          args: --workspace
+          targets: x86_64-unknown-linux-gnu
 
-      - name: Run cargo audit (generate JSON)
-        run: |
-          cargo install --locked cargo-audit || true
-          cargo audit -f json > cargo-audit.json || true
-        continue-on-error: true
-
-      - name: Upload cargo audit artifact
-        uses: actions/upload-artifact@v4
+      - name: Cache Rust artifacts
+        uses: Swatinem/rust-cache@v2
         with:
-          name: cargo-audit.json
-          path: cargo-audit.json
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          paths: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
 
-      - name: Fail on audit vulnerabilities
-        run: |
-          if [ ! -f cargo-audit.json ]; then
-            echo "No cargo-audit.json found; assuming no audit report."
-            exit 0
-          fi
-          python3 - <<'PY'
-import json,sys
-try:
-    j=json.load(open('cargo-audit.json'))
-except Exception:
-    sys.exit(0)
-v=j.get('vulnerabilities') or {}
-lst = []
-if isinstance(v, dict):
-    lst = v.get('list') or []
-elif isinstance(v, list):
-    lst = v
-count = len(lst)
-if count>0:
-    print(f"cargo-audit found {count} vulnerability(ies)")
-    sys.exit(1)
-sys.exit(0)
-PY
+      - name: Cache cargo-installed tools
+        uses: taiki-e/cache-cargo-install-action@v3
+        with:
+          # Cache commonly-installed cargo tools to speed installs
+          packages: cargo-audit
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+
+      - name: Run cargo-audit
+        run: cargo audit --deny-warning
+        # Fail job if advisories are found; `--deny-warning` treats advisories as errors
+
+      - name: Run cargo-deny
+        uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          # Ensure cargo-deny performs checks and fails on policy violations
+          args: check
+
+# Note: The `Swatinem/rust-cache@v2` action input schema varies across versions.
+# I used a conservative `key` + `paths` pattern to express the required cache key
+# with `${{ runner.os }}` and `hashFiles('**/Cargo.lock')`, and to list
+# `~/.cargo/registry`, `~/.cargo/git`, and `target/`. If the action requires different
+# input names, adjust `key`/`paths` to the action's exact parameters. This choice
+# prioritizes using the requested maintained action while ensuring the credential
+# and cache-key requirements from the spec are explicit.
