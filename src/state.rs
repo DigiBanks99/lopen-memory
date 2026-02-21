@@ -43,7 +43,7 @@ impl FromStr for State {
 /// Returns Ok(true) if transition is allowed, Ok(false) if it's a no-op (same state),
 /// Err if the transition is invalid.
 pub fn validate_transition(from: &str, to: &State) -> Result<bool, String> {
-    let from_state = from.parse::<State>().map_err(|e| e)?;
+    let from_state = from.parse::<State>()?;
     if &from_state == to {
         return Ok(false); // no-op
     }
