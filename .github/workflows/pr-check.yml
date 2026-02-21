@@ -102,8 +102,9 @@ jobs:
       - name: Cache cargo-installed tools
         uses: taiki-e/cache-cargo-install-action@v3
         with:
-          # Cache commonly-installed cargo tools to speed installs
-          packages: cargo-audit
+          # Crate to install and cache (action expects `tool` input)
+          tool: cargo-audit
+          locked: true
 
       - name: Install cargo-audit
         run: cargo install cargo-audit --locked
@@ -116,12 +117,3 @@ jobs:
         uses: EmbarkStudios/cargo-deny-action@v2
         with:
           # Ensure cargo-deny performs checks and fails on policy violations
-          args: check
-
-# Note: The `Swatinem/rust-cache@v2` action input schema varies across versions.
-# I used a conservative `key` + `paths` pattern to express the required cache key
-# with `${{ runner.os }}` and `hashFiles('**/Cargo.lock')`, and to list
-# `~/.cargo/registry`, `~/.cargo/git`, and `target/`. If the action requires different
-# input names, adjust `key`/`paths` to the action's exact parameters. This choice
-# prioritizes using the requested maintained action while ensuring the credential
-# and cache-key requirements from the spec are explicit.
