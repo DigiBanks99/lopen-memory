@@ -1,5 +1,5 @@
-pub mod project;
-pub mod module;
 pub mod feature;
-pub mod task;
+pub mod module;
+pub mod project;
 pub mod research;
+pub mod task;
