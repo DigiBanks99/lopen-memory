@@ -7,7 +7,7 @@ mod models;
 use clap::{Parser, Subcommand};
 use std::process;
 
-const DEFAULT_DB: &str = "~/.lopen-memory/lopen-memory.db";
+const DEFAULT_DB: &str = "/.lopen-memory/lopen-memory.db";
 
 fn db_path(override_path: Option<&String>) -> String {
     if let Some(p) = override_path {
@@ -17,7 +17,7 @@ fn db_path(override_path: Option<&String>) -> String {
         return p;
     }
     let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
-    format!("{}/.lopen-memory/lopen-memory.db", home)
+    format!("{}{}", home, DEFAULT_DB)
 }
 
 // ── Top-level CLI ─────────────────────────────────────────────────────────────
