@@ -1,0 +1,18 @@
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Unicode-3.0",
+    "BSD-2-Clause",
+    "GPL-3.0-only"
+]
+confidence-threshold = 0.8
+
+[bans]
+multiple-versions = "warn"
+
+[advisories]
+ignore = []
+
+[sources]
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
