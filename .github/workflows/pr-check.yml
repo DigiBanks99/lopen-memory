@@ -108,7 +108,7 @@ jobs:
         run: cargo install cargo-audit --locked
 
       - name: Run cargo-audit
-        run: cargo audit --deny-warning
+        run: cargo audit --deny warnings
 
       - name: Run cargo-deny
         uses: EmbarkStudios/cargo-deny-action@v2
