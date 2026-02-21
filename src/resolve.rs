@@ -1,4 +1,4 @@
-use rusqlite::{Connection, Result, params};
+use rusqlite::{params, Connection, Result};
 
 fn is_id(s: &str) -> bool {
     s.parse::<i64>().is_ok()
@@ -8,10 +8,18 @@ pub fn resolve_project(conn: &Connection, name_or_id: &str) -> Result<i64, Strin
     if is_id(name_or_id) {
         let id: i64 = name_or_id.parse().unwrap();
         let exists: bool = conn
-            .query_row("SELECT COUNT(*) FROM projects WHERE id=?1", params![id], |r| r.get::<_, i64>(0))
+            .query_row(
+                "SELECT COUNT(*) FROM projects WHERE id=?1",
+                params![id],
+                |r| r.get::<_, i64>(0),
+            )
             .map(|c| c > 0)
             .unwrap_or(false);
-        if exists { Ok(id) } else { Err(format!("project not found: {}", name_or_id)) }
+        if exists {
+            Ok(id)
+        } else {
+            Err(format!("project not found: {}", name_or_id))
+        }
     } else {
         let mut stmt = conn
             .prepare("SELECT id FROM projects WHERE name=?1")
@@ -37,10 +45,18 @@ pub fn resolve_module(
     if is_id(name_or_id) {
         let id: i64 = name_or_id.parse().unwrap();
         let exists: bool = conn
-            .query_row("SELECT COUNT(*) FROM modules WHERE id=?1", params![id], |r| r.get::<_, i64>(0))
+            .query_row(
+                "SELECT COUNT(*) FROM modules WHERE id=?1",
+                params![id],
+                |r| r.get::<_, i64>(0),
+            )
             .map(|c| c > 0)
             .unwrap_or(false);
-        if exists { Ok(id) } else { Err(format!("module not found: {}", name_or_id)) }
+        if exists {
+            Ok(id)
+        } else {
+            Err(format!("module not found: {}", name_or_id))
+        }
     } else {
         let ids: Vec<i64> = if let Some(pid) = project_id {
             let mut stmt = conn
@@ -82,10 +98,18 @@ pub fn resolve_feature(
     if is_id(name_or_id) {
         let id: i64 = name_or_id.parse().unwrap();
         let exists: bool = conn
-            .query_row("SELECT COUNT(*) FROM features WHERE id=?1", params![id], |r| r.get::<_, i64>(0))
+            .query_row(
+                "SELECT COUNT(*) FROM features WHERE id=?1",
+                params![id],
+                |r| r.get::<_, i64>(0),
+            )
             .map(|c| c > 0)
             .unwrap_or(false);
-        if exists { Ok(id) } else { Err(format!("feature not found: {}", name_or_id)) }
+        if exists {
+            Ok(id)
+        } else {
+            Err(format!("feature not found: {}", name_or_id))
+        }
     } else {
         let ids: Vec<i64> = if let Some(mid) = module_id {
             let mut stmt = conn
@@ -127,10 +151,16 @@ pub fn resolve_task(
     if is_id(name_or_id) {
         let id: i64 = name_or_id.parse().unwrap();
         let exists: bool = conn
-            .query_row("SELECT COUNT(*) FROM tasks WHERE id=?1", params![id], |r| r.get::<_, i64>(0))
+            .query_row("SELECT COUNT(*) FROM tasks WHERE id=?1", params![id], |r| {
+                r.get::<_, i64>(0)
+            })
             .map(|c| c > 0)
             .unwrap_or(false);
-        if exists { Ok(id) } else { Err(format!("task not found: {}", name_or_id)) }
+        if exists {
+            Ok(id)
+        } else {
+            Err(format!("task not found: {}", name_or_id))
+        }
     } else {
         let ids: Vec<i64> = if let Some(fid) = feature_id {
             let mut stmt = conn
@@ -168,10 +198,18 @@ pub fn resolve_research(conn: &Connection, name_or_id: &str) -> Result<i64, Stri
     if is_id(name_or_id) {
         let id: i64 = name_or_id.parse().unwrap();
         let exists: bool = conn
-            .query_row("SELECT COUNT(*) FROM research WHERE id=?1", params![id], |r| r.get::<_, i64>(0))
+            .query_row(
+                "SELECT COUNT(*) FROM research WHERE id=?1",
+                params![id],
+                |r| r.get::<_, i64>(0),
+            )
             .map(|c| c > 0)
             .unwrap_or(false);
-        if exists { Ok(id) } else { Err(format!("research not found: {}", name_or_id)) }
+        if exists {
+            Ok(id)
+        } else {
+            Err(format!("research not found: {}", name_or_id))
+        }
     } else {
         conn.query_row(
             "SELECT id FROM research WHERE name=?1",

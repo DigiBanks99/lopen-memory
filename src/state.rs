@@ -13,11 +13,11 @@ pub enum State {
 impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            State::Draft     => write!(f, "Draft"),
-            State::Planning  => write!(f, "Planning"),
-            State::Building  => write!(f, "Building"),
-            State::Complete  => write!(f, "Complete"),
-            State::Amending  => write!(f, "Amending"),
+            State::Draft => write!(f, "Draft"),
+            State::Planning => write!(f, "Planning"),
+            State::Building => write!(f, "Building"),
+            State::Complete => write!(f, "Complete"),
+            State::Amending => write!(f, "Amending"),
         }
     }
 }
@@ -27,12 +27,12 @@ impl FromStr for State {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Draft"     => Ok(State::Draft),
-            "Planning"  => Ok(State::Planning),
-            "Building"  => Ok(State::Building),
-            "Complete"  => Ok(State::Complete),
-            "Amending"  => Ok(State::Amending),
-            other       => Err(format!(
+            "Draft" => Ok(State::Draft),
+            "Planning" => Ok(State::Planning),
+            "Building" => Ok(State::Building),
+            "Complete" => Ok(State::Complete),
+            "Amending" => Ok(State::Amending),
+            other => Err(format!(
                 "invalid state '{}'; must be one of: Draft, Planning, Building, Complete, Amending",
                 other
             )),
@@ -48,11 +48,11 @@ pub fn validate_transition(from: &str, to: &State) -> Result<bool, String> {
         return Ok(false); // no-op
     }
     let allowed = match from_state {
-        State::Draft     => vec![State::Planning, State::Draft],
-        State::Planning  => vec![State::Building, State::Draft],
-        State::Building  => vec![State::Complete, State::Draft],
-        State::Complete  => vec![State::Amending, State::Draft],
-        State::Amending  => vec![State::Draft],
+        State::Draft => vec![State::Planning, State::Draft],
+        State::Planning => vec![State::Building, State::Draft],
+        State::Building => vec![State::Complete, State::Draft],
+        State::Complete => vec![State::Amending, State::Draft],
+        State::Amending => vec![State::Draft],
     };
     if allowed.contains(to) {
         Ok(true)
