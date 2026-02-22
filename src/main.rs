@@ -3,6 +3,7 @@ mod models;
 mod output;
 mod resolve;
 mod state;
+mod skill;
 
 use clap::{Parser, Subcommand};
 use std::process;
@@ -63,6 +64,11 @@ enum Commands {
     Research {
         #[command(subcommand)]
         action: ResearchAction,
+    },
+    /// Install the agent skill
+    Skill {
+        #[command(subcommand)]
+        action: SkillAction,
     },
 }
 
@@ -398,6 +404,18 @@ enum ResearchAction {
     },
 }
 
+// ── Skill actions ─────────────────────────────────────────────────────────────
+
+#[derive(Subcommand)]
+enum SkillAction {
+    /// Install SKILL.md to the agent skills directory
+    Install {
+        /// Override the skills directory (default: ~/.agents/skills)
+        #[arg(long)]
+        skills_dir: Option<String>,
+    },
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 fn main() {
@@ -418,6 +436,7 @@ fn main() {
         Commands::Feature { action } => handle_feature(&conn, action, json),
         Commands::Task { action } => handle_task(&conn, action, json),
         Commands::Research { action } => handle_research(&conn, action, json),
+        Commands::Skill   { action } => handle_skill(action, json),
     };
 
     process::exit(code);
@@ -1339,5 +1358,14 @@ fn resolve_optional_feature(
     match s {
         None => Ok(None),
         Some(f) => resolve::resolve_feature(conn, f, None).map(Some),
+    }
+}
+
+// ── Skill handler ─────────────────────────────────────────────────────────────
+
+fn handle_skill(action: SkillAction, json: bool) -> i32 {
+    match action {
+        SkillAction::Install { skills_dir } =>
+            skill::install(skills_dir.as_ref(), json),
     }
 }
