@@ -1,6 +1,6 @@
+use crate::output;
 use std::fs;
 use std::path::PathBuf;
-use crate::output;
 
 /// The SKILL.md content is embedded into the binary at compile time.
 /// The path `../skill/SKILL.md` is relative to src/skill.rs, i.e. it
@@ -25,7 +25,11 @@ pub fn install(override_path: Option<&String>, json: bool) -> i32 {
     let skill_dir = base.join("lopen-memory");
 
     if let Err(e) = fs::create_dir_all(&skill_dir) {
-        output::err(&format!("failed to create directory {}: {}", skill_dir.display(), e));
+        output::err(&format!(
+            "failed to create directory {}: {}",
+            skill_dir.display(),
+            e
+        ));
         return 2;
     }
 
