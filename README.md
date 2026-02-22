@@ -2,6 +2,29 @@
 
 A CLI utility for tracking software projects, modules, features, tasks, and research — backed by a local SQLite database. Designed for use by LLM agents.
 
+## Install
+
+From a release:
+
+```bash
+mkdir -p ~/.local/share/lopen-memory ~/.local/bin
+
+curl -L https://github.com/DigiBanks99/lopen-memory/releases/latest/download/lopen-memory-x86_64-unknown-linux-gnu \
+  -o ~/.local/share/lopen-memory/lopen-memory
+
+chmod +x ~/.local/share/lopen-memory/lopen-memory
+
+ln -sf ~/.local/share/lopen-memory/lopen-memory ~/.local/bin/lopen-memory
+```
+
+Or from source:
+
+```bash
+cargo install --path .
+```
+
+Or copy `target/release/lopen-memory` to somewhere on your `$PATH`.
+
 ## Build
 
 Requires Rust (stable). The SQLite library is bundled statically — no system dependencies needed.
@@ -11,19 +34,12 @@ cargo build --release
 # Binary at: target/release/lopen-memory
 ```
 
-## Install
-
-```bash
-cargo install --path .
-```
-
-Or copy `target/release/lopen-memory` to somewhere on your `$PATH`.
-
 ## Database
 
 Default location: `~/.lopen-memory/lopen-memory.db`
 
 Override via environment variable or flag:
+
 ```bash
 LOPEN_MEMORY_DB=/tmp/test.db lopen-memory project list
 lopen-memory --db /tmp/test.db project list
@@ -60,7 +76,7 @@ Plain text by default. Add `--json` for JSON output on any command.
 
 ## Hierarchy
 
-```
+```bash
 Project → Module → Feature → Task
 Research (root-level, linked to any entity via bridge tables)
 ```
