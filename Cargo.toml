@@ -1,6 +1,6 @@
 [package]
 name = "lopen-memory"
-version = "1.0.2-alpha"
+version = "1.0.4-alpha"
 edition = "2021"
 license = "GPL-3.0-only"
 
