@@ -2,8 +2,8 @@ mod db;
 mod models;
 mod output;
 mod resolve;
-mod state;
 mod skill;
+mod state;
 
 use clap::{Parser, Subcommand};
 use std::process;
@@ -436,7 +436,7 @@ fn main() {
         Commands::Feature { action } => handle_feature(&conn, action, json),
         Commands::Task { action } => handle_task(&conn, action, json),
         Commands::Research { action } => handle_research(&conn, action, json),
-        Commands::Skill   { action } => handle_skill(action, json),
+        Commands::Skill { action } => handle_skill(action, json),
     };
 
     process::exit(code);
@@ -1365,7 +1365,6 @@ fn resolve_optional_feature(
 
 fn handle_skill(action: SkillAction, json: bool) -> i32 {
     match action {
-        SkillAction::Install { skills_dir } =>
-            skill::install(skills_dir.as_ref(), json),
+        SkillAction::Install { skills_dir } => skill::install(skills_dir.as_ref(), json),
     }
 }
