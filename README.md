@@ -80,3 +80,11 @@ Plain text by default. Add `--json` for JSON output on any command.
 Project → Module → Feature → Task
 Research (root-level, linked to any entity via bridge tables)
 ```
+
+## Testing pre-commit hook
+
+The pre-commit script at `scripts/pre-commit.sh` expects the same JSON payload that the agent passes to `runTerminalCommand`. To force the hook to run locally, pipe the payload into the script while mimicking the `git commit` command, for example:
+
+```
+printf '{"tool_name":"runTerminalCommand","tool_input":"git commit -m \"test\""}' | ./scripts/pre-commit.sh
+```
