@@ -6,7 +6,6 @@ use std::path::PathBuf;
 /// The path `../skill/SKILL.md` is relative to src/skill.rs, i.e. it
 /// resolves to `skill/SKILL.md` at the repository root.
 const SKILL_CONTENT: &str = include_str!("../skill/SKILL.md");
-const GUIDE_CONTENT: &str = include_str!("../skill/references/GUIDE.md");
 
 const DEFAULT_SKILLS_DIR: &str = "/.agents/skills";
 
@@ -41,34 +40,13 @@ pub fn install(override_path: Option<&String>, json: bool) -> i32 {
         return 2;
     }
 
-    let references_dir = skill_dir.join("references");
-    if let Err(e) = fs::create_dir_all(&references_dir) {
-        output::err(&format!(
-            "failed to create directory {}: {}",
-            references_dir.display(),
-            e
-        ));
-        return 2;
-    }
-
-    let guide_dest = references_dir.join("GUIDE.md");
-    if let Err(e) = fs::write(&guide_dest, GUIDE_CONTENT) {
-        output::err(&format!("failed to write {}: {}", guide_dest.display(), e));
-        return 2;
-    }
-
     if json {
         crate::output::print_json(&serde_json::json!({
             "installed": true,
-            "skill_path": dest.display().to_string(),
-            "guide_path": guide_dest.display().to_string()
+            "skill_path": dest.display().to_string()
         }));
     } else {
-        output::print_plain(&format!(
-            "skill installed: {} and {}",
-            dest.display(),
-            guide_dest.display()
-        ));
+        output::print_plain(&format!("skill installed: {}", dest.display()));
     }
 
     0
