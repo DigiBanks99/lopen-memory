@@ -1,0 +1,17 @@
+{
+    "version": 1,
+    "hooks": {
+        "preToolUse": [
+            {
+                "type": "command",
+                "command": "./scripts/pre-commit.sh"                
+            }
+        ],
+        "postToolUse": [
+            {
+                "type": "command",
+                "command": "./scripts/format.sh"
+            }
+        ]
+    }
+}
